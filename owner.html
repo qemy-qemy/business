@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Owner Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a5298;
+            --secondary-color: #1e3c72;
+            --error-color: #ff4444;
+            --success-color: #00C851;
+            --background-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--background-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--container-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 440px;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+        }
+
+        h2 i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #444;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            padding-right: 45px;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            opacity: 0.95;
+        }
+
+        #message {
+            margin: 1.5rem 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s ease;
+        }
+
+        .error {
+            background: #ffebee;
+            color: var(--error-color);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .back-button {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            margin-top: 2rem;
+            width: 6rem;
+            font-size: 0.9rem;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-user-shield"></i>Worker Access</h2>
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+            <div class="form-group">
+                <label for="loginUsername"><i class="fas fa-user-tie"></i> Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter admin username" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword"><i class="fas fa-fingerprint"></i> Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter secure passphrase" required>
+                <i class="fas fa-eye password-toggle" onclick="togglePasswordVisibility()"></i>
+            </div>
+            <button type="submit">Authenticate <i class="fas fa-arrow-right-to-bracket"></i></button>
+            <a href="home.html" class="back-button">Back <i class="fas fa-arrow-left-to-bracket"></i></a>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const ownerCredentials = {
+            username: "rugero",  
+            password: "remy"
+        };
+
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('loginPassword');
+            const icon = document.querySelector('.password-toggle');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const message = document.getElementById('message');
+
+            if (username === ownerCredentials.username && password === ownerCredentials.password) {
+                localStorage.setItem("loggedIn", "true");
+                message.textContent = "Authentication successful! Redirecting...";
+                message.className = 'success';
+                setTimeout(() => {
+                    window.location.href = "customer.html";
+                }, 1500);
+            } else {
+                message.textContent = "⚠️ Access Denied: Invalid credentials";
+                message.className = 'error';
+                document.getElementById('loginPassword').value = '';
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
